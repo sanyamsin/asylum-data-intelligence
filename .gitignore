@@ -1,0 +1,32 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment
+.env
+*.env
+
+# Data (raw data not tracked)
+data/raw/
+data/processed/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reports output
+reports/*.pdf
+reports/*.html
