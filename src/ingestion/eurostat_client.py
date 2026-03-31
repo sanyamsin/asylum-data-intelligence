@@ -111,56 +111,86 @@ class EurostatClient:
         geo:          Optional[list] = None,
         citizen:      Optional[list] = None,
     ) -> pd.DataFrame:
-
-        params = {}
-        if start_period:
-            params["startPeriod"] = start_period
-        if end_period:
-            params["endPeriod"] = end_period
-
-        # Eurostat accepte les filtres répétés : geo=DE&geo=FR
-        # On passe les listes séparément via requests
+        """
+        Asylum applications by citizenship (migr_asyappctzm).
+        Fetche pays par pays pour éviter les erreurs 413.
+        """
         geo_list     = geo     or ["DE"]
         citizen_list = citizen or ["SY", "AF", "IQ", "PK", "NG"]
 
-        logger.info(f"Fetching asylum applications [{start_period} → {end_period}]")
+        all_dfs = []
+        for country in geo_list:
+            logger.info(f"  Fetching {country}...")
+            try:
+                url = f"{EUROSTAT_BASE_URL}/{DATASETS['applications']}"
+                multi_params = [
+                    ("startPeriod", start_period or "2020-01"),
+                    ("endPeriod",   end_period   or "2026-03"),
+                    ("format",      "JSON"),
+                    ("lang",        "EN"),
+                    ("geo",         country),
+                ]
+                for c in citizen_list:
+                    multi_params.append(("citizen", c))
 
-        import requests
-        url = f"{EUROSTAT_BASE_URL}/{DATASETS['applications']}"
-        params["format"] = "JSON"
-        params["lang"]   = "EN"
+                response = requests.get(url, params=multi_params, timeout=30)
+                response.raise_for_status()
+                raw = response.json()
+                df  = self._parse(raw)
+                df["dataset"] = "applications"
+                all_dfs.append(df)
+                logger.info(f"    → {len(df):,} rows")
+            except Exception as e:
+                logger.warning(f"    ⚠️ {country} failed: {e}")
 
-        # Construction manuelle pour répéter les clés
-        multi_params = list(params.items())
-        for g in geo_list:
-            multi_params.append(("geo", g))
-        for c in citizen_list:
-            multi_params.append(("citizen", c))
+        if not all_dfs:
+            return pd.DataFrame()
 
-        response = requests.get(url, params=multi_params, timeout=30)
-        response.raise_for_status()
-        raw = response.json()
-
-        df = self._parse(raw)
-        df["dataset"] = "applications"
-        logger.info(f"  → {len(df):,} rows fetched.")
-        return df
+        result = pd.concat(all_dfs, ignore_index=True)
+        logger.info(f"Total applications fetched: {len(result):,} rows.")
+        return result
 
     def get_first_instance_decisions(
         self,
         start_period: Optional[str] = None,
         end_period:   Optional[str] = None,
+        geo:          Optional[list] = None,
     ) -> pd.DataFrame:
-        """First instance asylum decisions (migr_asydcfsta)."""
-        params = {}
-        if start_period:
-            params["startPeriod"] = start_period
-        if end_period:
-            params["endPeriod"] = end_period
+        """
+        First instance asylum decisions (migr_asydcfsta).
+        Fetche pays par pays pour éviter les erreurs 413.
+        """
+        geo_list = geo or ["DE", "FR", "IT", "ES", "AT",
+                           "BE", "NL", "SE", "PL"]
 
-        logger.info("Fetching first instance decisions...")
-        raw = self._fetch(DATASETS["decisions"], params)
-        df  = self._parse(raw)
-        df["dataset"] = "decisions"
-        logger.info(f"  → {len(df):,} rows fetched.")
-        return df
+        all_dfs = []
+        for country in geo_list:
+            logger.info(f"  Fetching decisions {country}...")
+            try:
+                multi_params = [
+                    ("startPeriod", start_period or "2020-01"),
+                    ("endPeriod",   end_period   or "2026-03"),
+                    ("format",      "JSON"),
+                    ("lang",        "EN"),
+                    ("geo",         country),
+                ]
+                response = requests.get(
+                    f"{EUROSTAT_BASE_URL}/{DATASETS['decisions']}",
+                    params=multi_params,
+                    timeout=30,
+                )
+                response.raise_for_status()
+                raw = response.json()
+                df  = self._parse(raw)
+                df["dataset"] = "decisions"
+                all_dfs.append(df)
+                logger.info(f"    → {len(df):,} rows")
+            except Exception as e:
+                logger.warning(f"    ⚠️ {country} failed: {e}")
+
+        if not all_dfs:
+            return pd.DataFrame()
+
+        result = pd.concat(all_dfs, ignore_index=True)
+        logger.info(f"Total decisions fetched: {len(result):,} rows.")
+        return result
