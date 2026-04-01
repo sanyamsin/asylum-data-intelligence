@@ -153,3 +153,45 @@ Applicants from other origins are not included in this scope.
 - Box, G.E.P. et al. (2015). *Time Series Analysis: Forecasting and Control.*
 - Taylor, S.J. & Letham, B. (2018). Forecasting at Scale. *The American Statistician.*
 - Hyndman, R.J. & Athanasopoulos, G. (2021). *Forecasting: Principles and Practice.*
+
+---
+
+## 8. Phase 4 — Anomaly Detection Results
+
+### 8.1 Methods Applied
+
+| Method | Type | Threshold |
+|--------|------|-----------|
+| Z-score | Univariate, per country series | \|Z\| > 3.5 |
+| Isolation Forest | Multivariate | Contamination = 5% |
+
+### 8.2 Results
+
+| Method | Total Rows | Anomalies | Rate |
+|--------|------------|-----------|------|
+| Z-score | 18,840 | 312 | 1.7% |
+| Isolation Forest | 664 | 34 | 5.1% |
+| Classification | — | 17 genuine / 154 to review | — |
+
+### 8.3 Genuine Events (HIGH confidence)
+
+Corroborated by both methods:
+
+- **Poland & Sweden — Aug/Dec 2021**: Afghan surge following the fall of Kabul.
+Z-scores up to 19.5 — fully explained by the operational context.
+- **Germany — 2022 to 2025**: Sustained record volumes linked to the Ukraine
+conflict (TPR regime) and post-COVID processing recovery.
+
+### 8.4 Possible Data Errors
+
+- **2020 Q2**: COVID border closures generated near-zero values, creating
+artificial spikes when flows resumed. To be verified against national sources.
+- **Spain 2024–2026**: Progressive increase flagged as anomalous relative
+to historical baseline. Requires cross-validation with national reception
+authority data before inclusion in official reporting.
+
+### 8.5 Operational Recommendation
+
+Genuine events should be treated as known changepoints in forecasting models.
+Possible data errors should be flagged to Member State focal points for
+verification before inclusion in official EUAA statistical reporting.

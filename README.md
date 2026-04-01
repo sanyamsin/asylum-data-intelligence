@@ -9,7 +9,7 @@
 
 ---
 
-## 📌 Overview
+##  Overview
 
 **Asylum Data Intelligence System** is a production-grade analytical platform designed
 to support **information and data management functions** in the asylum and reception
@@ -26,7 +26,7 @@ and **high-level analytical reports** for institutional decision-makers.
 
 ---
 
-## 🎯 Key Features
+##  Key Features
 
 | Module | Description | Methods |
 |--------|-------------|---------|
@@ -39,14 +39,14 @@ and **high-level analytical reports** for institutional decision-makers.
 
 ---
 
-## 🏆 Key Results
+##  Key Results
 
 ### Forecasting Performance — Germany (Pilot Series, 2020–2026)
 
 | Model | MAE | RMSE | MAPE | Status |
 |-------|-----|------|------|--------|
-| **ARIMA(0,1,0)×(1,0,0,12)** | 2,878 | 3,897 | **26%** | ✅ Selected |
-| Prophet | 10,087 | 10,471 | 126% | ❌ Rejected |
+| **ARIMA(0,1,0)×(1,0,0,12)** | 2,878 | 3,897 | **26%** |  Selected |
+| Prophet | 10,087 | 10,471 | 126% |  Rejected |
 
 **Key finding**: ARIMA outperforms Prophet on this dataset due to three major
 structural breaks (COVID-19, Kabul fall, Ukraine conflict) over a short 74-month
@@ -63,9 +63,23 @@ series. See [methodology.md](docs/methodology.md) for full analytical justificat
 
 Data freshness: **32 days lag** (within 60-day threshold) ✅
 
+### Anomaly Detection Results — Asylum Applications Dataset
+
+| Method | Rows Analysed | Anomalies | Rate |
+|--------|--------------|-----------|------|
+| Z-score (threshold 3.5) | 18,840 | 312 | 1.7% |
+| Isolation Forest (5%) | 664 | 34 | 5.1% |
+| **Classification** | — | **17 genuine events / 154 to review** | — |
+
+**Key findings**:
+- Polish & Swedish surges (Aug–Dec 2021) confirmed as genuine operational events — Afghan surge post-Kabul (Z-score up to 19.5)
+- German record volumes (2022–2025) corroborated as genuine — Ukraine TPR regime
+- 2020 Q2 anomalies linked to COVID border closures — flagged for MS verification
+
+See [methodology.md](docs/methodology.md) for full classification details.
 ---
 
-## 🏗️ Project Structure
+##  Project Structure
 ```
 asylum-data-intelligence/
 │
