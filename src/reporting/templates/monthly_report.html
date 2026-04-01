@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: #003399;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .header .subtitle {
+            font-size: 10px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+        .header .logo-area {
+            text-align: right;
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        /* EU Flag stars simulation */
+        .eu-stars {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: #FFD700;
+        }
+
+        /* Report meta */
+        .report-meta {
+            background: #f0f4ff;
+            border-left: 4px solid #003399;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #555;
+        }
+
+        /* Content */
+        .content { padding: 20px 30px; }
+
+        /* Section titles */
+        h2 {
+            font-size: 13px;
+            color: #003399;
+            border-bottom: 2px solid #003399;
+            padding-bottom: 4px;
+            margin: 20px 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h3 {
+            font-size: 11px;
+            color: #2c3e50;
+            margin: 12px 0 6px 0;
+            font-weight: bold;
+        }
+
+        /* KPI boxes */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 12px 0;
+        }
+        .kpi-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-top: 3px solid #003399;
+            padding: 10px;
+            text-align: center;
+        }
+        .kpi-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #003399;
+        }
+        .kpi-label {
+            font-size: 9px;
+            color: #666;
+            margin-top: 3px;
+            text-transform: uppercase;
+        }
+        .kpi-change {
+            font-size: 9px;
+            margin-top: 2px;
+        }
+        .kpi-change.positive { color: #28a745; }
+        .kpi-change.negative { color: #dc3545; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 10px;
+        }
+        thead tr {
+            background: #003399;
+            color: white;
+        }
+        thead th {
+            padding: 6px 8px;
+            text-align: left;
+            font-weight: normal;
+            letter-spacing: 0.3px;
+        }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        tbody tr:hover { background: #e8f0fe; }
+        tbody td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+        .badge-green  { background: #d4edda; color: #155724; }
+        .badge-yellow { background: #fff3cd; color: #856404; }
+        .badge-red    { background: #f8d7da; color: #721c24; }
+        .badge-blue   { background: #d1ecf1; color: #0c5460; }
+
+        /* QA section */
+        .qa-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .qa-item {
+            padding: 8px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        .qa-pass { background: #d4edda; border-left: 3px solid #28a745; }
+        .qa-warn { background: #fff3cd; border-left: 3px solid #ffc107; }
+        .qa-fail { background: #f8d7da; border-left: 3px solid #dc3545; }
+
+        /* Anomaly section */
+        .anomaly-highlight {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 8px 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: #003399;
+            color: white;
+            padding: 10px 30px;
+            font-size: 9px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .footer a { color: #adc8ff; }
+
+        /* Page break */
+        .page-break { page-break-after: always; }
+
+        /* Methodology note */
+        .methodology-note {
+            background: #f0f4ff;
+            border: 1px solid #003399;
+            padding: 10px;
+            font-size: 9px;
+            color: #555;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div>
+        <div class="eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+        <h1>ASYLUM DATA INTELLIGENCE SYSTEM</h1>
+        <div class="subtitle">Monthly Statistical Report — European Union Agency for Asylum (EUAA)</div>
+    </div>
+    <div class="logo-area">
+        <div style="font-size:13px; font-weight:bold;">EUAA</div>
+        <div>European Union Agency for Asylum</div>
+        <div style="margin-top:4px;">{{ report_period }}</div>
+    </div>
+</div>
+
+<!-- REPORT META -->
+<div class="report-meta">
+    <span><strong>Report type:</strong> Monthly Statistical Overview</span>
+    <span><strong>Reference period:</strong> {{ reference_period }}</span>
+    <span><strong>Countries covered:</strong> {{ countries_covered }}</span>
+    <span><strong>Generated:</strong> {{ generated_date }}</span>
+    <span><strong>Data sources:</strong> Eurostat, UNHCR</span>
+</div>
+
+<div class="content">
+
+    <!-- SECTION 1: KEY INDICATORS -->
+    <h2>1. Key Indicators</h2>
+
+    <div class="kpi-grid">
+        <div class="kpi-box">
+            <div class="kpi-value">{{ total_applications }}</div>
+            <div class="kpi-label">Total Applications</div>
+            <div class="kpi-change {{ applications_change_class }}">{{ applications_change }}</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-value">{{ total_decisions }}</div>
+            <div class="kpi-label">Total Decisions</div>
+            <div class="kpi-change">First instance</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-value">{{ recognition_rate }}</div>
+            <div class="kpi-label">Recognition Rate</div>
+            <div class="kpi-change">EU average</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-value">{{ data_freshness }}</div>
+            <div class="kpi-label">Data Freshness</div>
+            <div class="kpi-change {{ freshness_class }}">{{ freshness_status }}</div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: APPLICATIONS BY COUNTRY -->
+    <h2>2. Applications by Member State</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Member State</th>
+                <th class="text-right">Applications</th>
+                <th class="text-right">Share (%)</th>
+                <th class="text-right">MoM Change</th>
+                <th class="text-center">Trend</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in applications_by_country %}
+            <tr>
+                <td>{{ row.country }}</td>
+                <td class="text-right">{{ row.applications }}</td>
+                <td class="text-right">{{ row.share }}</td>
+                <td class="text-right">{{ row.mom_change }}</td>
+                <td class="text-center">
+                    <span class="badge {{ row.trend_badge }}">{{ row.trend }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- SECTION 3: TOP NATIONALITIES -->
+    <h2>3. Top Nationalities</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Country of Origin</th>
+                <th class="text-right">Applications</th>
+                <th class="text-right">Share (%)</th>
+                <th class="text-center">Recognition Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in top_nationalities %}
+            <tr>
+                <td>{{ row.nationality }}</td>
+                <td class="text-right">{{ row.applications }}</td>
+                <td class="text-right">{{ row.share }}</td>
+                <td class="text-center">
+                    <span class="badge badge-blue">{{ row.recognition_rate }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- SECTION 4: QA STATUS -->
+    <h2>4. Data Quality Status</h2>
+
+    <div class="qa-grid">
+        {% for check in qa_checks %}
+        <div class="qa-item qa-{{ check.status_class }}">
+            <strong>[Tier {{ check.tier }}] {{ check.name }}</strong><br>
+            {{ check.message }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- SECTION 5: ANOMALY ALERTS -->
+    <h2>5. Anomaly Alerts</h2>
+
+    {% if genuine_events %}
+    <div class="anomaly-highlight">
+        <strong>⚠ Genuine Operational Events Detected (HIGH confidence)</strong><br>
+        {% for event in genuine_events %}
+        • {{ event.time }} — {{ event.geo }}: flagged by Z-score and Isolation Forest<br>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No high-confidence anomalies detected in the current reporting period.</p>
+    {% endif %}
+
+    <!-- SECTION 6: FORECAST -->
+    <h2>6. Short-Term Forecast (ARIMA — Next 3 Months)</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Period</th>
+                <th class="text-right">Forecast</th>
+                <th class="text-right">Lower (95%)</th>
+                <th class="text-right">Upper (95%)</th>
+                <th class="text-center">Confidence</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in forecast %}
+            <tr>
+                <td>{{ row.period }}</td>
+                <td class="text-right">{{ row.yhat }}</td>
+                <td class="text-right">{{ row.lower }}</td>
+                <td class="text-right">{{ row.upper }}</td>
+                <td class="text-center">
+                    <span class="badge {{ row.conf_badge }}">{{ row.confidence }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- METHODOLOGY NOTE -->
+    <div class="methodology-note">
+        <strong>Methodological note:</strong>
+        Data sources: Eurostat migr_asyappctzm (monthly applications) and migr_asydcfsta
+        (first instance decisions). Geographic scope: 9 EU Member States (DE, FR, IT, ES,
+        AT, BE, NL, SE, PL). Greece excluded due to API constraints (HTTP 413).
+        Forecasting model: ARIMA(0,1,0)×(1,0,0,12), MAPE=26% on 12-month backtest.
+        Full methodology: github.com/sanyamsin/asylum-data-intelligence
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <span>Asylum Data Intelligence System — Automated Monthly Report</span>
+    <span>Generated: {{ generated_date }} | Confidential — Internal Use Only</span>
+    <span>github.com/sanyamsin/asylum-data-intelligence</span>
+</div>
+
+</body>
+</html>
