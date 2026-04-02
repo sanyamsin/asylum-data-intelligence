@@ -77,35 +77,28 @@ class ARIMAForecaster:
         forecast_periods: int = 6,
         test_size:        int = 12,
     ) -> ForecastResult:
-        """
-        Entraîne auto-ARIMA et génère un forecast avec intervalles.
-
-        Parameters
-        ----------
-        series           : Série mensuelle (DatetimeIndex)
-        country          : Label pays pour le rapport
-        forecast_periods : Nombre de mois à prévoir
-        test_size        : Mois de hold-out pour évaluation
-        """
         try:
             import pmdarima as pm
         except ImportError:
-            raise ImportError("Installe pmdarima : pip install pmdarima")
+            raise ImportError("Install pmdarima: pip install pmdarima")
 
         if len(series) < test_size + 12:
-            raise ValueError(f"Série trop courte (besoin > {test_size + 12} obs).")
+            raise ValueError(f"Series too short (need > {test_size + 12} obs).")
 
-        # Interpolation des NaN
-        series = series.interpolate(method='linear')
+        # Store original dates
+        original_index = pd.to_datetime(series.index)
 
-        # Split train / test
-        train = series.iloc[:-test_size]
-        test  = series.iloc[-test_size:]
+        # Interpolation
+        series_vals = series.interpolate(method='linear').values
 
-        logger.info(f"[{country}] Fitting auto-ARIMA sur {len(train)} mois...")
+        # Split train / test (numeric arrays)
+        train_vals = series_vals[:-test_size]
+        test_vals  = series_vals[-test_size:]
+
+        logger.info(f"[{country}] Fitting auto-ARIMA on {len(train_vals)} months...")
 
         model = pm.auto_arima(
-            train,
+            train_vals,
             seasonal=self.seasonal,
             m=self.seasonal_m,
             suppress_warnings=True,
@@ -114,28 +107,38 @@ class ARIMAForecaster:
         )
 
         # Backtest
-        backtest_preds = model.predict(n_periods=test_size)
-        metrics = compute_metrics(test.values, backtest_preds)
-        logger.info(f"[{country}] Backtest — MAE: {metrics['MAE']:.1f} | "
-                    f"MAPE: {metrics['MAPE']:.1%}")
+        backtest_raw   = model.predict(n_periods=test_size)
+        backtest_preds = np.array(backtest_raw).flatten()
+        metrics        = compute_metrics(test_vals, backtest_preds)
+        logger.info(f"[{country}] Backtest — MAE: {metrics['MAE']:.1f} | MAPE: {metrics['MAPE']:.1%}")
 
-        # Refit sur série complète
-        model.update(test)
+        # Refit on full series
+        model.update(series_vals[-test_size:])
 
-        # Forecast futur
-        future_preds, conf_int = model.predict(
-            n_periods=forecast_periods, return_conf_int=True
-        )
-        last_date    = series.index[-1]
-        future_dates = pd.date_range(
-            start=last_date, periods=forecast_periods + 1, freq="MS"
-        )[1:]
+        # Forecast future (numeric)
+        future_raw   = model.predict(n_periods=forecast_periods)
+        future_preds = np.array(future_raw).flatten()
 
+        # Reconstruct future dates from original index
+        # Pure Python date arithmetic — avoids all pandas timestamp issues
+        last_dt = pd.Timestamp(str(original_index[-1])[:7] + "-01")
+        y, m = last_dt.year, last_dt.month
+        future_list = []
+        for _ in range(forecast_periods):
+            m += 1
+            if m > 12:
+                m = 1
+                y += 1
+            future_list.append(pd.Timestamp(year=y, month=m, day=1))
+        future_dates = pd.DatetimeIndex(future_list)
+
+        # Confidence intervals based on MAE
+        mae_val  = float(metrics["MAE"])
         forecast_df = pd.DataFrame({
-            "ds":          future_dates,
-            "yhat":        future_preds,
-            "yhat_lower":  conf_int[:, 0],
-            "yhat_upper":  conf_int[:, 1],
+            "ds":         future_dates,
+            "yhat":       future_preds,
+            "yhat_lower": future_preds - 1.96 * mae_val,
+            "yhat_upper": future_preds + 1.96 * mae_val,
         })
 
         return ForecastResult(
