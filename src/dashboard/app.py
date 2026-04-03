@@ -13,6 +13,23 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 import streamlit as st
 
 # ------------------------------------------------------------------
+# Auto-generate data if not present (HuggingFace Spaces)
+# ------------------------------------------------------------------
+
+from pathlib import Path
+
+data_path = Path("data/processed/applications_clean.csv")
+if not data_path.exists():
+    import subprocess
+    import sys
+    st.info("⏳ First run: downloading and processing data... (2-3 minutes)")
+    subprocess.run([sys.executable, "-m", "src.ingestion.pipeline"], check=True)
+    subprocess.run([sys.executable, "-m", "src.processing.cleaning"], check=True)
+    subprocess.run([sys.executable, "-m", "src.processing.validation"], check=True)
+    subprocess.run([sys.executable, "-m", "src.models.anomaly_detection"], check=True)
+    st.rerun()
+
+# ------------------------------------------------------------------
 # Page configuration
 # ------------------------------------------------------------------
 
