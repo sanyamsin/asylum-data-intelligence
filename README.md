@@ -1,3 +1,13 @@
+---
+title: Asylum Data Intelligence
+emoji: 🛡️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_file: app.py
+pinned: true
+python_version: "3.12"
+---
 # Asylum Data Intelligence System
 ### EUAA-Aligned Analytics Platform
 
