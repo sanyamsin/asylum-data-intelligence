@@ -227,8 +227,10 @@ MSc Data Science & AI — DSTI Paris
 12+ years field experience | ACF · CRF · Handicap International
 West & Central Africa | IRAM/PDD-CAR | VAINCRE II/Mauritanie
 
-[![GitHub](https://img.shields.io/badge/GitHub-sanyamsin-black)](https://github.com/sanyamsin)
-[![HuggingFace](https://img.shields.io/badge/HuggingFace-Lokozu-yellow)](https://huggingface.co/spaces/Lokozu)
+[![GitHub](https://img.shields.io/badge/GitHub-sanyamsin-black?logo=github)](https://github.com/sanyamsin)
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-Lokozu-yellow?logo=huggingface)](https://huggingface.co/spaces/Lokozu/asylum-data-intelligence)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/serge-alain-nyamsin)
+[![Dashboard](https://img.shields.io/badge/Live%20Dashboard-Streamlit-red?logo=streamlit)](https://huggingface.co/spaces/Lokozu/asylum-data-intelligence)
 
 ---
 
