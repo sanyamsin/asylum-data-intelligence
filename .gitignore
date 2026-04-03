@@ -30,3 +30,4 @@ Thumbs.db
 # Reports output
 reports/*.pdf
 reports/*.html
+reports/*.png
